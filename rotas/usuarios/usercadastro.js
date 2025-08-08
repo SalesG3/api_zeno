@@ -30,6 +30,14 @@ app.post('/usuarios/cadastro', async(req, res) => {
 
     // Tratamento de Erros
     catch(err){
+        if(err.code == "ER_DUP_ENTRY"){
+            res.status(200).send({
+                sucesso: false,
+                mensagem: "Esse número de celular já foi cadastrado!"
+            })
+            return
+        }
+
         console.log(err)
         res.status(500).send({
             erro: err
