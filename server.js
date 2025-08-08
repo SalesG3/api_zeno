@@ -7,6 +7,11 @@ const auth = function(req, res, next){
         res.status(401).send({
             atuh: "Não autorizado!"
         })
+        return
+    }
+    else if(req.headers.token == process.env.TOKEN){
+        next()
+        return
     }
 }
 
