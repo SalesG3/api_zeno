@@ -15,8 +15,6 @@ app.post('/novo/categoria', async(req, res) => {
         })
     }
     catch(err){
-        
-
         if(err.code == "ER_DUP_ENTRY"){
             let match = err.sqlMessage.match(/key '(.+?)'/)
 
@@ -37,9 +35,65 @@ app.post('/novo/categoria', async(req, res) => {
 
 app.get('/grid/categoria/:id', async(req, res) => {
 
-    let [data] = await pool.promise().execute(`SELECT * FROM CATEGORIAS WHERE ID_USUARIO = ?`,
+    let [data] = await pool.promise().execute(`SELECT * FROM CATEGORIAS WHERE ID_USUARIO = ? ORDER BY CD_CATEGORIA`,
         [req.params.id]
     )
 
     res.status(200).send(data)
+})
+
+app.delete('/delete/categoria/:id', async(req, res) => {
+
+    try{
+        let [data] = await pool.promise().execute(`DELETE FROM CATEGORIAS WHERE ID_CATEGORIA = ?`,
+            [req.params.id]
+        )
+
+        res.status(200).send({
+            sucesso: true,
+            mensagem: "Registro apagado com sucesso!"
+        })
+    }
+    catch(err){
+        console.log(err)
+        res.status(500).send({
+            sucesso: false,
+            mensagem: "Erro desconhecido!"
+        })
+    }
+})
+
+app.get('/consulta/categoria/:id', async(req, res) => {
+
+    let [data] = await pool.promise().execute(`SELECT * FROM CATEGORIAS WHERE ID_CATEGORIA = ?`,
+        [req.params.id]
+    )
+
+    res.status(200).send(data)
+})
+
+app.put('/altera/categoria/:id', async(req, res)=> {
+
+    let { CD_CATEGORIA, NM_CATEGORIA, DS_CATEGORIA } = req.body
+
+    try{
+        
+        let [data] = await pool.promise().execute(`CALL UPDATE_CATEGORIA( ?, ?, ?, ?)`,
+            [CD_CATEGORIA, NM_CATEGORIA, DS_CATEGORIA, req.params.id]
+        )
+
+        res.status(200).send({
+            sucesso: true,
+            mensagem: "Registro atualizado com sucesso!"
+        })
+
+    }
+    catch(err){
+        console.log(err)
+
+        res.status(500).send({
+            sucesso: false,
+            mensagem: "Erro desconhecido!"
+        })
+    }
 })
