@@ -27,7 +27,7 @@ const server = http.createServer(app)
 
 server.listen(process.env.PORT, (err) => {
     if(err) throw err
-    console.log('Servidor Live! Porta: ', process.env.PORT)
+    console.log('Servidor Live! Porta:', process.env.PORT)
 })
 
 // Conexão com Banco de Dados
